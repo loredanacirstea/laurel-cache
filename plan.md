@@ -15,14 +15,21 @@ Using that variable we can implement a blockchain for the contract and have it c
 
 ## Steps
 
+- DB
 1. find a free SQL DB provider
 2. modify https://github.com/blockchain-etl/ethereum-etl in such a way that it retains only data pertinent to 1 contract: The Laurel
 3. set the data on it in conformance with https://github.com/blockchain-etl/ethereum-etl
 
+- Node.js
 1. create a server that serves https://github.com/blockchain-etl/ethereum-etl data
 2. make sure it is compatible with web3 standards
-3. create a chaching on it for transactions of interest (if speed is greatly improved by chacing)
+3. create a chaching on it for transactions of interest (if speed is greatly improved by caching)
 4. keep data in sync with Rinkeby
 
+- marks
 1. modify the dapps to use this cache
 
+## Quick alternative
+
+- DB & Node: one single table with mapping hash(input) -> output
+- marks made in a way as to memoize onto the DB
