@@ -32,7 +32,9 @@
     "prestart": "yarn run rebuild",
     "start": "node -r source-map-support/register .",
     "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
-    "rebuild": "yarn run clean && yarn run build"
+    "rebuild": "yarn run clean && yarn run build",
+    "postinstall": "yarn build",
+    "start:prod": "node dist/index.js"
   },
   "repository": {
     "type": "git",
@@ -53,6 +55,7 @@
     "@loopback/rest": "^10.0.1",
     "@loopback/rest-explorer": "^3.3.3",
     "@loopback/service-proxy": "^3.2.3",
+    "dotenv": "^10.0.0",
     "loopback-connector-postgresql": "^5.0.1",
     "tslib": "^2.0.0"
   },
@@ -61,7 +64,6 @@
     "@loopback/eslint-config": "^11.0.1",
     "@loopback/testlab": "^3.4.3",
     "@types/node": "^10.17.60",
-    "dotenv": "^10.0.0",
     "eslint": "^7.32.0",
     "source-map-support": "^0.5.20",
     "typescript": "~4.3.5"
