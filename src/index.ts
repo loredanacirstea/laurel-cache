@@ -1,4 +1,5 @@
 import {ApplicationConfig, LaurelCacheApplication} from './application';
+require('dotenv').config();
 
 export * from './application';
 
