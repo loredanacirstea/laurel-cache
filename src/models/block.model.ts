@@ -1,4 +1,5 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, hasMany, model, property} from '@loopback/repository';
+import {Transaction} from './transaction.model';
 
 @model({
   settings: {
@@ -9,6 +10,7 @@ import {Entity, model, property} from '@loopback/repository';
 })
 export class Block extends Entity {
   @property({
+    name: 'hash',
     type: 'string',
     id: true,
     generated: false,
@@ -17,6 +19,7 @@ export class Block extends Entity {
   id: string;
 
   @property({
+    name: 'hash',
     type: 'string',
     required: true,
   })
@@ -137,6 +140,9 @@ export class Block extends Entity {
     required: true,
   })
   baseFeePerGas: string;
+
+  @hasMany(() => Transaction, {keyTo: 'blockHash'})
+  transactions: Transaction[];
 
   constructor(data?: Partial<Block>) {
     super(data);

@@ -1,4 +1,5 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, belongsTo} from '@loopback/repository';
+import {Transaction} from './transaction.model';
 
 @model({
   settings: {
@@ -22,14 +23,6 @@ export class Log extends Entity {
     required: true,
   })
   logIndex: string;
-
-  @property({
-    name: 'transaction_hash',
-    type: 'string',
-    required: true,
-  })
-  transactionHash: string;
-
   // TODO number
   @property({
     name: 'transaction_index',
@@ -92,6 +85,8 @@ export class Log extends Entity {
   })
   blockHash: string;
 
+  @belongsTo(() => Transaction, {name: 'transaction'})
+  transactionHash: string;
   @property({
     name: 'log_name',
     type: 'string',
