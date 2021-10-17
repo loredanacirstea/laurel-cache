@@ -4,27 +4,22 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
+  del, get,
+  getModelSchemaRef, param, patch, post, put, requestBody,
+  response
 } from '@loopback/rest';
 import {Block} from '../models';
 import {BlockRepository} from '../repositories';
+import {blockHandle} from '../transformers';
 
 export class BlockController {
   constructor(
     @repository(BlockRepository)
-    public blockRepository : BlockRepository,
-  ) {}
+    public blockRepository: BlockRepository,
+  ) { }
 
   @post('/block')
   @response(200, {
@@ -37,7 +32,7 @@ export class BlockController {
         'application/json': {
           schema: getModelSchemaRef(Block, {
             title: 'NewBlock',
-            
+
           }),
         },
       },
@@ -74,6 +69,24 @@ export class BlockController {
     @param.filter(Block) filter?: Filter<Block>,
   ): Promise<Block[]> {
     return this.blockRepository.find(filter);
+  }
+
+  @get('/block_js')
+  @response(200, {
+    description: 'Array of Block model instances',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+          items: getModelSchemaRef(Block, {includeRelations: true}),
+        },
+      },
+    },
+  })
+  async _find(
+    @param.filter(Block) filter?: Filter<Block>,
+  ): Promise<any[]> {
+    return this.blockRepository.find(filter).then(data => data.map(v => blockHandle(v)));
   }
 
   @patch('/block')

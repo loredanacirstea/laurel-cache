@@ -23,16 +23,17 @@ export class Block extends Entity {
   hash: string;
 
   @property({
+    name: 'parent_hash',
     type: 'string',
     required: true,
   })
-  parent_hash: string;
+  parentHash: string;
 
   @property({
-    type: 'number',
+    type: 'string',
     required: true,
   })
-  number: number;
+  number: string;
 
   @property({
     type: 'date',
@@ -47,32 +48,37 @@ export class Block extends Entity {
   nonce: string;
 
   @property({
+    name: 'sha3_uncles',
     type: 'string',
   })
-  sha3_uncles?: string;
+  sha3Uncles?: string;
 
   @property({
+    name: 'logs_bloom',
     type: 'string',
   })
-  logs_bloom?: string;
+  logsBloom?: string;
 
   @property({
+    name: 'transactions_root',
     type: 'string',
     required: true,
   })
-  transactions_root: string;
+  transactionsRoot: string;
 
   @property({
+    name: 'state_root',
     type: 'string',
     required: true,
   })
-  state_root: string;
+  stateRoot: string;
 
   @property({
+    name: 'receipts_root',
     type: 'string',
     required: true,
   })
-  receipts_root: string;
+  receiptsRoot: string;
 
   @property({
     type: 'string',
@@ -81,16 +87,17 @@ export class Block extends Entity {
   miner: string;
 
   @property({
-    type: 'number',
+    type: 'string',
     required: true,
   })
-  difficulty: number;
+  difficulty: string;
 
   @property({
+    name: 'total_difficulty',
     type: 'number',
     required: true,
   })
-  total_difficulty: number;
+  totalDifficulty: number;
 
   @property({
     type: 'number',
@@ -98,33 +105,38 @@ export class Block extends Entity {
   size?: number;
 
   @property({
+    name: 'extra_data',
     type: 'string',
   })
-  extra_data?: string;
+  extraData?: string;
 
   @property({
+    name: 'gas_limit',
+    type: 'string',
+    required: true,
+  })
+  gasLimit: string;
+
+  @property({
+    name: 'gas_used',
+    type: 'string',
+    required: true,
+  })
+  gasUsed: string;
+
+  @property({
+    name: 'transaction_count',
     type: 'number',
     required: true,
   })
-  gas_limit: number;
+  transactionCount: number;
 
   @property({
-    type: 'number',
+    name: 'base_fee_per_gas',
+    type: 'string',
     required: true,
   })
-  gas_used: number;
-
-  @property({
-    type: 'number',
-    required: true,
-  })
-  transactions_count: number;
-
-  @property({
-    type: 'number',
-  })
-  base_fee_per_gas?: number;
-
+  baseFeePerGas: string;
 
   constructor(data?: Partial<Block>) {
     super(data);

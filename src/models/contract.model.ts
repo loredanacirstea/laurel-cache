@@ -29,11 +29,12 @@ export class Contract extends Entity {
   bytecode: string;
 
   @property({
+    name: 'function_sighashes',
     type: 'array',
     itemType: 'string',
     required: true,
   })
-  function_sighashes: string[];
+  functionSighashes: string[];
 
   @property({
     type: 'number',

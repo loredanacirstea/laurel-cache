@@ -29,22 +29,25 @@ export class Transaction extends Entity {
   nonce: number;
 
   @property({
+    name: 'transaction_index',
     type: 'number',
     required: true,
   })
-  transaction_index: number;
+  transactionIndex: number;
 
   @property({
+    name: 'from_address',
     type: 'string',
     required: true,
   })
-  from_address: string;
+  fromAddress: string;
 
   @property({
+    name: 'to_address',
     type: 'string',
     required: true,
   })
-  to_address: string;
+  toAddress: string;
 
   @property({
     type: 'string',
@@ -59,10 +62,11 @@ export class Transaction extends Entity {
   gas: number;
 
   @property({
+    name: 'gas_price',
     type: 'number',
     required: true,
   })
-  gas_price: number;
+  gasPrice: number;
 
   @property({
     type: 'string',
@@ -70,66 +74,78 @@ export class Transaction extends Entity {
   input?: string;
 
   @property({
+    name: 'receipt_cumulative_gas_used',
     type: 'number',
   })
-  receipt_cumulative_gas_used?: number;
+  receiptCumulativeGasUsed?: number;
 
   @property({
+    name: 'receipt_gas_used',
     type: 'number',
   })
-  receipt_gas_used?: number;
+  receiptGasUsed?: number;
 
   @property({
+    name: 'receipt_contract_address',
     type: 'string',
   })
-  receipt_contract_address?: string;
+  receiptContractAddress?: string;
 
   @property({
+    name: 'receipt_root',
     type: 'string',
   })
-  receipt_root?: string;
+  receiptRoot?: string;
 
   @property({
+    name: 'receipt_status',
     type: 'number',
   })
-  receipt_status?: number;
+  receiptStatus?: number;
 
   @property({
+    name: 'block_timestamp',
     type: 'date',
   })
-  block_timestamp?: string;
+  blockTimestamp?: string;
 
   @property({
+    name: 'block_number',
     type: 'number',
     required: true,
   })
-  block_number: number;
+  blockNumber: number;
 
   @property({
+    name: 'block_hash',
     type: 'string',
     required: true,
   })
-  block_hash: string;
+  blockHash: string;
 
   @property({
+    name: 'max_fee_per_gas',
     type: 'number',
   })
-  max_fee_per_gas?: number;
+  maxFeePerGas?: number;
 
   @property({
+    name: 'max_priority_fee_per_gas',
     type: 'number',
   })
-  max_priority_fee_per_gas?: number;
+  maxPriorityFeePerGas?: number;
 
   @property({
+    name: 'transaction_type',
     type: 'number',
   })
-  transaction_type?: number;
+  transactionType?: number;
 
   @property({
+    name: 'receipt_effective_gas_price',
     type: 'number',
   })
-  receipt_effective_gas_price?: number;
+  receiptEffectiveGasPrice?: number;
 
 
   constructor(data?: Partial<Transaction>) {

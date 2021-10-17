@@ -15,22 +15,28 @@ export class Log extends Entity {
   })
   id: string;
 
+  // TODO number
   @property({
-    type: 'number',
-    required: true,
-  })
-  log_index: number;
-
-  @property({
+    name: 'log_index',
     type: 'string',
     required: true,
   })
-  transaction_hash: string;
+  logIndex: string;
 
   @property({
-    type: 'number',
+    name: 'transaction_hash',
+    type: 'string',
+    required: true,
   })
-  transaction_index?: number;
+  transactionHash: string;
+
+  // TODO number
+  @property({
+    name: 'transaction_index',
+    type: 'string',
+    required: true,
+  })
+  transactionIndex: string;
 
   @property({
     type: 'string',
@@ -65,22 +71,47 @@ export class Log extends Entity {
   topic3?: string;
 
   @property({
+    name: 'block_timestamp',
     type: 'date',
     required: true,
   })
-  block_timestamp: string;
+  blockTimestamp: string;
 
+  // TODO number
   @property({
-    type: 'number',
-    required: true,
-  })
-  block_number: number;
-
-  @property({
+    name: 'block_number',
     type: 'string',
     required: true,
   })
-  block_hash: string;
+  blockNumber: string;
+
+  @property({
+    name: 'block_hash',
+    type: 'string',
+    required: true,
+  })
+  blockHash: string;
+
+  @property({
+    name: 'log_name',
+    type: 'string',
+    required: true,
+  })
+  logName: string;
+
+  @property({
+    name: 'topic0_decoded',
+    type: 'string',
+    required: true,
+  })
+  topic0Decoded: string;
+
+  @property({
+    name: 'data_decoded',
+    type: 'string',
+    required: true,
+  })
+  dataDecoded: string;
 
 
   constructor(data?: Partial<Log>) {

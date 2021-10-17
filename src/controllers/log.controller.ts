@@ -4,27 +4,22 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
+  del, get,
+  getModelSchemaRef, param, patch, post, put, requestBody,
+  response
 } from '@loopback/rest';
 import {Log} from '../models';
 import {LogRepository} from '../repositories';
+import {logHandle} from '../transformers';
 
 export class LogController {
   constructor(
     @repository(LogRepository)
-    public logRepository : LogRepository,
-  ) {}
+    public logRepository: LogRepository,
+  ) { }
 
   @post('/log')
   @response(200, {
@@ -37,7 +32,7 @@ export class LogController {
         'application/json': {
           schema: getModelSchemaRef(Log, {
             title: 'NewLog',
-            
+
           }),
         },
       },
@@ -74,6 +69,24 @@ export class LogController {
     @param.filter(Log) filter?: Filter<Log>,
   ): Promise<Log[]> {
     return this.logRepository.find(filter);
+  }
+
+  @get('/log_js')
+  @response(200, {
+    description: 'Array of Log model instances',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+          items: getModelSchemaRef(Log, {includeRelations: true}),
+        },
+      },
+    },
+  })
+  async _find(
+    @param.filter(Log) filter?: Filter<Log>,
+  ): Promise<any[]> {
+    return this.logRepository.find(filter).then(data => data.map(v => logHandle(v)));
   }
 
   @patch('/log')
