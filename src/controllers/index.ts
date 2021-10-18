@@ -5,6 +5,7 @@ export * from './transaction.controller';
 export * from './log.controller';
 export * from './contract.controller';
 export * from './provider.controller';
+export * from './state.controller';
 export * from './block-transaction.controller';
 export * from './transaction-block.controller';
 export * from './transaction-log.controller';
