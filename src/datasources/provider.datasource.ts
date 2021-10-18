@@ -7,13 +7,13 @@ import config from './web3config';
 // gracefully. The `stop()` method is inherited from `juggler.DataSource`.
 // Learn more at https://loopback.io/doc/en/lb4/Life-cycle.html
 @lifeCycleObserver('datasource')
-export class Web3CDataSource extends juggler.DataSource
+export class ProviderDataSource extends juggler.DataSource
   implements LifeCycleObserver {
-  static dataSourceName = 'web3c';
+  static dataSourceName = 'provider';
   static readonly defaultConfig = config;
 
   constructor(
-    @inject('datasources.config.web3c', {optional: true})
+    @inject('datasources.config.provider', {optional: true})
     dsConfig: object = config,
   ) {
     super(dsConfig);

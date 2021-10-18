@@ -1,5 +1,5 @@
 const config = {
-  name: 'web3c',
+  name: 'provider',
   connector: 'postgresql',
   url: process.env.POSTGRESQL_URL,
   host: process.env.POSTGRESQL_HOST,
