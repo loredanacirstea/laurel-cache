@@ -10,3 +10,4 @@ export * from './block-transaction.controller';
 export * from './transaction-block.controller';
 export * from './transaction-log.controller';
 export * from './log-transaction.controller';
+export * from './url.controller';

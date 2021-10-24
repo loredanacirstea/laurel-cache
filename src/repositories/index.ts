@@ -4,3 +4,4 @@ export * from './contract.repository';
 export * from './log.repository';
 export * from './transaction.repository';
 export * from './state.repository';
+export * from './url.repository';
