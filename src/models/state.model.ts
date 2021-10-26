@@ -1,4 +1,5 @@
-import {Entity, model, property} from '@loopback/repository';
+import {belongsTo, Entity, model, property} from '@loopback/repository';
+import {Contract} from './contract.model';
 
 @model()
 export class State extends Entity {
@@ -6,14 +7,9 @@ export class State extends Entity {
     type: 'number',
     id: true,
     generated: true,
+    required: false,
   })
-  id?: number;
-
-  @property({
-    type: 'string',
-    required: true,
-  })
-  contractId: string;
+  id: number;
 
   @property({
     type: 'string',
@@ -27,6 +23,40 @@ export class State extends Entity {
   })
   value: string;
 
+  @property({
+    type: 'string',
+    required: true,
+  })
+  lastModifiedTx: string;
+
+  @property({
+    name: 'transaction_index',
+    type: 'number',
+    required: true,
+    postgresql: {
+      dataType: "int",
+    },
+  })
+  transactionIndex: number;
+
+  @property({
+    name: 'block_number',
+    type: 'string',
+    required: true,
+    postgresql: {
+      dataType: "bigint",
+    },
+  })
+  blockNumber: string;
+
+  // @property({
+  //   type: 'number',
+  //   required: true,
+  // })
+  // contractId: number;
+
+  @belongsTo(() => Contract)
+  contractId: string;
 
   constructor(data?: Partial<State>) {
     super(data);

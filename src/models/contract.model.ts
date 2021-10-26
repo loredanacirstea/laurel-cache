@@ -19,20 +19,38 @@ export class Contract extends Entity {
   @property({
     type: 'string',
     required: true,
+    postgresql: {
+      dataType: 'VARCHAR',
+      dataLength: 42,
+    },
   })
   address: string;
 
   @property({
     type: 'string',
-    required: true,
+    required: false,
   })
-  bytecode: string;
+  bytecode: string; // runtimeBytecode
+
+  @property({
+    type: 'string',
+    required: false,
+  })
+  compiledBytecode: string;
+
+  @property({
+    type: 'string',
+    required: false,
+    default: '',
+  })
+  constructorArgs: string;
 
   @property({
     name: 'function_sighashes',
     type: 'array',
     itemType: 'string',
-    required: true,
+    required: false,
+    default: [],
   })
   functionSighashes: string[];
 
@@ -42,6 +60,35 @@ export class Contract extends Entity {
   })
   chainid: number;
 
+  @property({
+    type: 'string',
+    required: true,
+    postgresql: {
+      dataType: "bigint",
+    },
+  })
+  lastExecutedBlock: string;
+
+  @property({
+    type: 'string',
+    required: true,
+    default: '0',
+    postgresql: {
+      dataType: "bigint",
+    },
+  })
+  balance: string;
+
+  @property({
+    type: 'array',
+    itemType: 'object',
+    required: false,
+    default: [],
+    postgresql: {
+      dataType: "jsonb",
+    },
+  })
+  abi: object;
 
   constructor(data?: Partial<Contract>) {
     super(data);

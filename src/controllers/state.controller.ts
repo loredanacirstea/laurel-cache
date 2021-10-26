@@ -4,18 +4,12 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
+  del, get,
+  getModelSchemaRef, param, patch, post, put, requestBody,
+  response
 } from '@loopback/rest';
 import {State} from '../models';
 import {StateRepository} from '../repositories';
@@ -23,8 +17,8 @@ import {StateRepository} from '../repositories';
 export class StateController {
   constructor(
     @repository(StateRepository)
-    public stateRepository : StateRepository,
-  ) {}
+    public stateRepository: StateRepository,
+  ) { }
 
   @post('/state')
   @response(200, {
@@ -45,6 +39,37 @@ export class StateController {
     state: Omit<State, 'id'>,
   ): Promise<State> {
     return this.stateRepository.create(state);
+  }
+
+  @post('/states')
+  @response(200, {
+    description: 'State model instance',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+          items: getModelSchemaRef(State),
+        },
+      },
+    },
+  })
+  async createAll(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: {
+            type: 'array',
+            items: getModelSchemaRef(State, {
+              title: 'NewState',
+              exclude: ['id'],
+            }),
+          },
+        },
+      },
+    })
+    states: Omit<State, 'id'>[],
+  ): Promise<State[]> {
+    return this.stateRepository.createAll(states);
   }
 
   @get('/state/count')

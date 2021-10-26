@@ -141,7 +141,7 @@ export class Block extends Entity {
   })
   baseFeePerGas: string;
 
-  @hasMany(() => Transaction, {keyTo: 'blockHash'})
+  @hasMany(() => Transaction, {keyTo: 'block_number'})
   transactions: Transaction[];
 
   constructor(data?: Partial<Block>) {

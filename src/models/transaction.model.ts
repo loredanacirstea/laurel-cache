@@ -1,4 +1,4 @@
-import {Entity, model, property, belongsTo, hasMany} from '@loopback/repository';
+import {belongsTo, Entity, hasMany, model, property} from '@loopback/repository';
 import {Block} from './block.model';
 import {Log} from './log.model';
 
@@ -55,7 +55,7 @@ export class Transaction extends Entity {
 
   @property({
     type: 'string',
-    default: 0x0000000000000000000000000000000000000000000000000000000000000000,
+    default: '0x0000000000000000000000000000000000000000000000000000000000000000',
   })
   value?: string;
 
@@ -114,11 +114,12 @@ export class Transaction extends Entity {
   blockTimestamp?: string;
 
   @property({
-    name: 'block_number',
-    type: 'number',
+    name: 'block_hash',
+    type: 'string',
     required: true,
   })
-  blockNumber: number;
+  blockHash: string;
+
   @property({
     name: 'max_fee_per_gas',
     type: 'number',
@@ -144,7 +145,7 @@ export class Transaction extends Entity {
   receiptEffectiveGasPrice?: number;
 
   @belongsTo(() => Block, {name: 'block'})
-  blockHash: string;
+  block_number: string;
 
   @hasMany(() => Log, {keyTo: 'transactionHash'})
   logs: Log[];
