@@ -7,13 +7,14 @@ const config = {
   user: process.env.POSTGRESQL_USER,
   password: process.env.POSTGRESQL_PASSW,
   database: process.env.POSTGRESQL_DB,
-  ssl: {
-    rejectUnauthorized: false,
-    // rejectUnauthorized: true,
-    // ca: fs.readFileSync(crtpath).toString(),
-    // key: fs.readFileSync(keypath).toString(),
-    // cert: dbCert,
-  }
+  // ssl: {
+  //   rejectUnauthorized: false,
+  //   // rejectUnauthorized: true,
+  //   // ca: fs.readFileSync(crtpath).toString(),
+  //   // key: fs.readFileSync(keypath).toString(),
+  //   // cert: dbCert,
+  // },
+  alchemyKey: process.env.ALCHEMY_KEY,
 };
 console.log('config', config);
 export default config;

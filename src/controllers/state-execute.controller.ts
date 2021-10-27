@@ -3,6 +3,7 @@ import {
 } from '@loopback/repository';
 import {get, getModelSchemaRef, param, post, response} from '@loopback/rest';
 import {evmjs, utils} from 'ewasm-jsvm';
+import config from '../config';
 import {Contract, State} from '../models';
 import {StateRepository} from '../repositories';
 import {ContractController} from './contract.controller';
@@ -36,7 +37,7 @@ export class StateExecuteController {
   async snapshot(
     @param.path.number('contractId') contractId: string,
     @param.path.number('blockNumber') blockNumberLimit: string,
-  ): Promise<object> {
+  ): Promise<StateSnapshot> {
     const snapshot: StateSnapshot = {};
     const states = await this.stateRepository.find({
       where: {
@@ -51,7 +52,57 @@ export class StateExecuteController {
     states.forEach((state: State) => {
       snapshot[state.key] = state.value;
     });
+    console.log('snapshot keys', Object.keys(snapshot).length);
     return snapshot;
+  }
+
+  @get('/state-verify/{contractId}/{blockNumber}')
+  @response(200, {
+    description: 'Array of State model instances',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+          items: getModelSchemaRef(State, {includeRelations: true}),
+        },
+      },
+    },
+  })
+  async verify(
+    @param.path.number('contractId') contractId: string,
+    @param.path.number('blockNumber') blockNumberLimit: string,
+  ): Promise<object> {
+    const contractRepository = await this.stateRepository.contractRepository;
+    const contractController = new ContractController(contractRepository);
+    const contract = await contractController.findById(contractId);
+    if (!contract) return {};
+
+    const {chainid} = contract;
+    const provider = new ethers.providers.AlchemyProvider(chainid, config.alchemyKey);
+
+    const snapshot: StateSnapshot = await this.snapshot(contractId, blockNumberLimit);
+    const different: StateSnapshot = {};
+    let finished = true;
+
+    for (const key in snapshot) {
+      try {
+        const value = await provider.getStorageAt(contract.address, key, parseInt(blockNumberLimit));
+        if (value !== snapshot[key]) {
+          different[key] = value;
+        }
+      } catch (e) {
+        finished = false;
+        console.error(e);
+        break;
+      }
+    }
+
+    const result = {
+      snapshot,
+      different,
+      finished,
+    }
+    return result;
   }
 
   @post('/state-execute/{contractId}/{blockNumber}')
