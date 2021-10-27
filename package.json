@@ -55,7 +55,9 @@
     "@loopback/rest": "^10.0.1",
     "@loopback/rest-explorer": "^3.3.3",
     "@loopback/service-proxy": "^3.2.3",
+    "axios": "^0.23.0",
     "dotenv": "^10.0.0",
+    "ewasm-jsvm": "^0.0.19",
     "loopback-connector-postgresql": "^5.0.1",
     "tslib": "^2.0.0"
   },

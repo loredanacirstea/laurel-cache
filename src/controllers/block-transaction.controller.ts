@@ -3,7 +3,7 @@ import {
   CountSchema,
   Filter,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
   del,
@@ -13,11 +13,11 @@ import {
   param,
   patch,
   post,
-  requestBody,
+  requestBody
 } from '@loopback/rest';
 import {
   Block,
-  Transaction,
+  Transaction
 } from '../models';
 import {BlockRepository} from '../repositories';
 
@@ -61,7 +61,7 @@ export class BlockTransactionController {
           schema: getModelSchemaRef(Transaction, {
             title: 'NewTransactionInBlock',
             exclude: ['id'],
-            optional: ['blockHash']
+            optional: ['block_number']
           }),
         },
       },

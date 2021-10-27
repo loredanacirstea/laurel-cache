@@ -4,18 +4,12 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
+  del, get,
+  getModelSchemaRef, param, patch, post, put, requestBody,
+  response
 } from '@loopback/rest';
 import {Contract} from '../models';
 import {ContractRepository} from '../repositories';
@@ -23,8 +17,8 @@ import {ContractRepository} from '../repositories';
 export class ContractController {
   constructor(
     @repository(ContractRepository)
-    public contractRepository : ContractRepository,
-  ) {}
+    public contractRepository: ContractRepository,
+  ) { }
 
   @post('/contract')
   @response(200, {
@@ -37,7 +31,7 @@ export class ContractController {
         'application/json': {
           schema: getModelSchemaRef(Contract, {
             title: 'NewContract',
-            
+
           }),
         },
       },
