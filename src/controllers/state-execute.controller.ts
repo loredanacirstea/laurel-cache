@@ -1,11 +1,9 @@
 import {
   repository
 } from '@loopback/repository';
-import {
-  param, post, response
-} from '@loopback/rest';
+import {get, getModelSchemaRef, param, post, response} from '@loopback/rest';
 import {evmjs, utils} from 'ewasm-jsvm';
-import {Contract} from '../models';
+import {Contract, State} from '../models';
 import {StateRepository} from '../repositories';
 import {ContractController} from './contract.controller';
 import {TransactionController} from './transaction.controller';
@@ -13,7 +11,9 @@ const BN = require('bn.js');
 const {ethers} = require('ethers');
 const fs = require('fs');
 
-const _evmjs = evmjs({});
+interface StateSnapshot {
+  [key: string]: string;
+}
 
 export class StateExecuteController {
   constructor(
@@ -21,14 +21,42 @@ export class StateExecuteController {
     public stateRepository: StateRepository,
   ) { }
 
+  @get('/state-execute/{contractId}/{blockNumber}')
+  @response(200, {
+    description: 'Array of State model instances',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+          items: getModelSchemaRef(State, {includeRelations: true}),
+        },
+      },
+    },
+  })
+  async snapshot(
+    @param.path.number('contractId') contractId: string,
+    @param.path.number('blockNumber') blockNumberLimit: string,
+  ): Promise<object> {
+    const snapshot: StateSnapshot = {};
+    const states = await this.stateRepository.find({
+      where: {
+        and: [
+          {contractId},
+          {blockNumber: {lt: (parseInt(blockNumberLimit) + 1).toString(10)}},
+        ]
+      },
+      order: ['blockNumber ASC', 'transactionIndex ASC']
+    });
+    console.log('snapshot states', states.length);
+    states.forEach((state: State) => {
+      snapshot[state.key] = state.value;
+    });
+    return snapshot;
+  }
+
   @post('/state-execute/{contractId}/{blockNumber}')
   @response(200, {
     description: 'Execute block',
-    // content: {
-    //   'application/json': {
-    //     schema: getModelSchemaRef(State, {includeRelations: true}),
-    //   },
-    // },
   })
   async execute(
     @param.path.number('contractId') contractId: string,
@@ -44,6 +72,7 @@ export class StateExecuteController {
     if (!contract) return;
     const {address, balance, bytecode, chainid} = contract;
 
+    const evmrunner = evmjs({});
     let storedStates = [];
     let blockNumber;
     let storage: any = {};
@@ -110,8 +139,8 @@ export class StateExecuteController {
           [fromAddress]: {...fromAccount},
         }
 
-        _evmjs.setContext({accounts: {...currentAccounts}});
-        const runtime = await _evmjs.runtimeSim(bytecode, [], address);
+        evmrunner.setContext({accounts: {...currentAccounts}});
+        const runtime = await evmrunner.runtimeSim(bytecode, [], address);
 
         const tx = {
           data: input,
