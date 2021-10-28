@@ -22,6 +22,21 @@ export class StateExecuteController {
     public stateRepository: StateRepository,
   ) { }
 
+  async statesUntilBlock(
+    @param.path.number('contractId') contractId: string,
+    @param.path.number('blockNumber') blockNumberLimit: string,
+  ): Promise<State[]> {
+    return this.stateRepository.find({
+      where: {
+        and: [
+          {contractId},
+          {blockNumber: {lt: (parseInt(blockNumberLimit) + 1).toString(10)}},
+        ]
+      },
+      order: ['blockNumber ASC', 'transactionIndex ASC']
+    });
+  }
+
   @get('/state-execute/{contractId}/{blockNumber}')
   @response(200, {
     description: 'Array of State model instances',
@@ -39,15 +54,7 @@ export class StateExecuteController {
     @param.path.number('blockNumber') blockNumberLimit: string,
   ): Promise<StateSnapshot> {
     const snapshot: StateSnapshot = {};
-    const states = await this.stateRepository.find({
-      where: {
-        and: [
-          {contractId},
-          {blockNumber: {lt: (parseInt(blockNumberLimit) + 1).toString(10)}},
-        ]
-      },
-      order: ['blockNumber ASC', 'transactionIndex ASC']
-    });
+    const states = await this.statesUntilBlock(contractId, blockNumberLimit);
     console.log('snapshot states', states.length);
     states.forEach((state: State) => {
       snapshot[state.key] = state.value;
@@ -77,24 +84,48 @@ export class StateExecuteController {
     const contract = await contractController.findById(contractId);
     if (!contract) return {};
 
-    const {chainid} = contract;
+    let finished = true;
+    const snapshot: StateSnapshot = {};
+    const different: StateSnapshot = {};
+    const statesMap: any = {};
+    const {chainid, lastVerifiedBlock} = contract;
+    const isVerified = !lastVerifiedBlock ? false : (parseInt(lastVerifiedBlock) >= parseInt(blockNumberLimit));
     const provider = new ethers.providers.AlchemyProvider(chainid, config.alchemyKey);
 
-    const snapshot: StateSnapshot = await this.snapshot(contractId, blockNumberLimit);
-    const different: StateSnapshot = {};
-    let finished = true;
+    const states = await this.statesUntilBlock(contractId, blockNumberLimit);
+    console.log('snapshot states', states.length);
 
+    for (const state of states) {
+      snapshot[state.key] = state.value;
+      statesMap[state.key] = state;
+    }
+    console.log('snapshot keys', Object.keys(snapshot).length);
+
+    if (isVerified) return {
+      snapshot,
+      different,
+      finished,
+    }
+    let count = 0;
     for (const key in snapshot) {
+      count += 1;
+      if (parseInt(statesMap[key].blockNumber) <= parseInt(lastVerifiedBlock)) continue;
+      let value;
       try {
-        const value = await provider.getStorageAt(contract.address, key, parseInt(blockNumberLimit));
+        value = await provider.getStorageAt(contract.address, key, parseInt(blockNumberLimit));
         if (value !== snapshot[key]) {
           different[key] = value;
         }
       } catch (e) {
-        finished = false;
         console.error(e);
-        break;
+        finished = false;
       }
+      if (count % 50 === 0) console.log('--different', count, snapshot[key], value, value === snapshot[key], different);
+    }
+    console.log('*****different', finished, different);
+    if (finished && Object.keys(different).length === 0) {
+      contract.lastVerifiedBlock = blockNumberLimit;
+      await contractController.updateById(contractId, contract);
     }
 
     const result = {

@@ -55,6 +55,14 @@ export class State extends Entity {
   // })
   // contractId: number;
 
+  @property({
+    name: 'infura_verified',
+    type: 'boolean',
+    required: false,
+    default: false,
+  })
+  infuraVerified: boolean;
+
   @belongsTo(() => Contract)
   contractId: string;
 

@@ -70,6 +70,16 @@ export class Contract extends Entity {
   lastExecutedBlock: string;
 
   @property({
+    name: 'last_verified_block',
+    type: 'string',
+    required: true,
+    postgresql: {
+      dataType: "bigint",
+    },
+  })
+  lastVerifiedBlock: string;
+
+  @property({
     type: 'string',
     required: true,
     default: '0',
